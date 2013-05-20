@@ -1,0 +1,29 @@
+{% if user.usergroup_set.all %}
+
+<table class="table three-quarters">
+<thead>
+  <tr>
+    <td>Name</td>
+    <td></td>
+  </tr>
+</thead>
+<tbody>
+  {% for usergroup in user.usergroup_set.all %}
+  <tr>
+    <td>{{usergroup.group.name}}</td>
+    <td class="actions">
+      <a 
+        class="btn btn-danger usergroup-delete" 
+        href="{% url 'usergroup_delete' usergroup.id %}"
+        data-onsuccess_target="#group-association .list">
+        Delete
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
+
+{% else %}
+There were no groups found for this user.
+{% endif %}

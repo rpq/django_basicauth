@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<fieldset>
+  <h4>Login</h4>
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div>
+      <label>{{ login_form.username.label }}</label>
+      {{ login_form.username }}
+    </div>
+
+    <div>
+      <label>{{ login_form.password.label }}</label>
+      {{ login_form.password }}
+    </div>
+
+    <div>
+      <input 
+        class="btn btn-primary" 
+        type="submit" 
+        name="submit" 
+        value="Login" />
+    </div>
+  </form>
+</fieldset>
+
+{% endblock %}
