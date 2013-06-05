@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<fieldset>
+  <h4>Register</h4>
+  <form method="post" action="{% url 'register' %}">
+    {% csrf_token %}
+    <div>
+      <label>{{ form.email.label }}</label>
+      {{ form.email }}
+    </div>
+
+    <div>
+      <label>{{ form.username.label }}</label>
+      {{ form.username }}
+    </div>
+
+    <div>
+      <label>{{ form.first_name.label }}</label>
+      {{ form.first_name }}
+    </div>
+
+    <div>
+      <label>{{ form.last_name.label }}</label>
+      {{ form.last_name }}
+    </div>
+
+    <div>
+      <label>{{ form.password.label }}</label>
+      {{ form.password }}
+    </div>
+
+    <div>
+      <label>{{ form.password_confirm.label }}</label>
+      {{ form.password }}
+    </div>
+
+    <div>
+      <input 
+        class="btn btn-primary" 
+        type="submit" 
+        name="submit" 
+        value="Register" />
+    </div>
+  </form>
+</fieldset>
+
+{% endblock %}
