@@ -5,6 +5,7 @@ from django.db import transaction
 from basicauth.decorators import login_required, admin_access, _logged_in
 from basicauth import models as basicauth_models
 from basicauth.authentication import forms
+from basicauth.forms import UserModelForm
 
 def login(request):
     if request.POST:
@@ -50,3 +51,23 @@ def login_redirect(request):
         return redirect('userprofile_detail', user.username)
     else:
         return redirect('login')
+
+@transaction.commit_on_success
+def register(request):
+    if request.POST:
+        user_model_form = UserModelForm(request.POST)
+        if user_model_form.is_valid():
+            user = user_model_form.save()
+            user.send_verify_email()
+            messages.info(request, 'Successfully logged in')
+            request.session['logged_in_user_id'] = user.id
+            return redirect('login_redirect')
+        else:
+            d['form'] = user_model_form
+            return render(request,
+                'basicauth/authentication/register.html', d)
+    else:
+        d = {}
+        d['form'] = UserModelForm()
+        return render(request,
+            'basicauth/authentication/register.html', d)

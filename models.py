@@ -4,9 +4,9 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.core import validators
 
-from basicauth.helpers import CreatedUpdated
+from basicauth.helpers import CreatedUpdated, Registration
 
-class User(CreatedUpdated):
+class User(CreatedUpdated, Registration):
     username = models.CharField(
         max_length=20,
         null=False,
@@ -59,9 +59,6 @@ class User(CreatedUpdated):
 
     def has_a_group(self):
         return self.usergroup_set.all().count() > 0
-
-    def has_child(self, child):
-        return child in self.children.all()
 
     def __str__(self):
         return self.__unicode__()
