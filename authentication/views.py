@@ -45,25 +45,33 @@ def logout(request):
 
 def login_redirect(request):
     if _logged_in(request):
-        user = get_object_or_404(
-            basicauth_models.User,
+        # if it's the case that the user existed once,
+        # user logged in, and user was deleted while still
+        # having an active session
+        user = basicauth_models.User.objects.filter(
             pk=request.session.get('logged_in_user_id'))
-        return redirect('userprofile_detail', user.username)
-    else:
-        return redirect('login')
+        if user.exists():
+            return redirect('userprofile_detail', user[0].username)
+        else:
+            request.session.pop('logged_in_user_id', None)
+    return redirect('login')
 
 @transaction.commit_on_success
 def register(request):
     if request.POST:
         user_model_form = UserModelForm(request.POST)
         if user_model_form.is_valid():
-            user = user_model_form.save()
+            user = user_model_form.save(commit=False)
+            user.set_password(
+                user_model_form.cleaned_data['password'].encode(
+                    'utf-8'))
+            user.save()
             user.send_verify_email()
             messages.info(request, 'Successfully logged in')
             request.session['logged_in_user_id'] = user.id
             return redirect('login_redirect')
         else:
-            d['form'] = user_model_form
+            d = dict(form=user_model_form)
             return render(request,
                 'basicauth/authentication/register.html', d)
     else:
@@ -71,3 +79,13 @@ def register(request):
         d['form'] = UserModelForm()
         return render(request,
             'basicauth/authentication/register.html', d)
+
+@transaction.commit_on_success
+def register_email_verify(request, verify_id):
+    u = get_object_or_404(basicauth_models.User,
+        verify_id=verify_id)
+    u.verify()
+    u.save()
+    messages.info(request,
+        'We have successfully verified your email address.')
+    return redirect('userprofile_detail', u.username)

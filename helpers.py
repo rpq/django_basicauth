@@ -1,7 +1,12 @@
+import hashlib
+
 from django.db import models
 from django.http import HttpResponse
 from django.utils import timezone
 from django.conf import settings
+from django.template.loader import get_template
+from django.template import Context
+from django.core.urlresolvers import reverse
 
 def json_redirect(redirect_url):
     return HttpResponse(
@@ -18,8 +23,6 @@ class CreatedUpdated(models.Model):
 from django.core.mail import EmailMultiAlternatives
 
 class DjangoTemplate(object):
-    from django.template.loader import get_template
-    from django.template import Context
 
     def __init__(self, **kwargs):
         self.template_dictionary = kwargs.pop('template_dictionary')
@@ -51,9 +54,9 @@ class VerifyRegistrationEmail(object):
             template_location=self.EMAIL_TEMPLATE_LOCATION_PLAINTEXT,
             template_dictionary=d).get_string()
 
-class Registration(object):
+class Registration(models.Model):
 
-    verify_id = models.URLField(null=False, blank=False)
+    verify_id = models.TextField(null=False, blank=False)
     verified = models.BooleanField(default=False, null=False, blank=False)
 
     class Meta:
@@ -61,22 +64,31 @@ class Registration(object):
 
     def send_verify_email(self):
         self.verify_id = self.create_verify_id()
+        self.save()
 
-        d = { 'host': settings.ROOT_HOST_URL, 'user': self }
+        d = {
+            'host': settings.ROOT_HOST_URL,
+            'user': self,
+            'link': '{0}{1}'.format(
+                settings.ROOT_HOST_URL,
+                reverse('register_email_verify', args=[self.verify_id,]))
+        }
 
         msg = EmailMultiAlternatives(
             VerifyRegistrationEmail.EMAIL_SUBJECT,
             VerifyRegistrationEmail.get_plaintext(d),
             VerifyRegistrationEmail.EMAIL_FROM,
             [self.email])
-        msg.attach_alternative(VerifyRegistrationEmail.get_html(d),
+        msg.attach_alternative(
+            VerifyRegistrationEmail.get_html(d),
             'text/html')
         msg.send()
 
     def create_verify_id(self):
-        return hashlib.new('sha512').update(
-            datetime.datetime.strftime('%Y%m%d%H%M%s') + self.email)\
-            .hexdigest()
+        h = hashlib.new('sha512')
+        h.update(
+            timezone.now().strftime('%Y%m%d%H%M%s') + self.email)
+        return h.hexdigest()
 
     def verify(self):
         self.verified = True
