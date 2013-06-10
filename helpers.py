@@ -39,10 +39,6 @@ class VerifyRegistrationEmail(object):
     EMAIL_FROM = 'rpq@winscores.com'
 
     @classmethod
-    def get_plaintext(self, d):
-        self.EMAIL_TEMPLATE_LOCATION
-
-    @classmethod
     def get_html(self, d):
         return DjangoTemplate(
             template_location=self.EMAIL_TEMPLATE_LOCATION_HTML,

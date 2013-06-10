@@ -60,6 +60,12 @@ class User(CreatedUpdated, Registration):
     def has_a_group(self):
         return self.usergroup_set.all().count() > 0
 
+    def is_logged_in(self, request):
+        return request.session.get('logged_in_user_id', None) == self.id
+
+    def is_registered(self):
+        return self.id is not None
+
     def __str__(self):
         return self.__unicode__()
 
