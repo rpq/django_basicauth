@@ -14,6 +14,9 @@ class UserModelForm(forms.ModelForm):
             'first_name', 'last_name',)
         widgets = { 'password': forms.PasswordInput, }
 
+    def clean_username(self):
+        return self.cleaned_data['username'].lower()
+
     def clean(self):
         cleaned_data = super(UserModelForm, self).clean()
         password = cleaned_data.get('password')
