@@ -52,7 +52,7 @@ class VerifyRegistrationEmail(object):
 
 class Registration(models.Model):
 
-    verify_id = models.TextField(null=False, blank=False)
+    verify_id = models.CharField(max_length=32, null=False, blank=False)
     verified = models.BooleanField(default=False, null=False, blank=False)
 
     class Meta:
@@ -81,7 +81,8 @@ class Registration(models.Model):
         msg.send()
 
     def create_verify_id(self):
-        h = hashlib.new('sha512')
+        # md5 should be fine...
+        h = hashlib.new('md5')
         h.update(
             timezone.now().strftime('%Y%m%d%H%M%s') + self.email)
         return h.hexdigest()
