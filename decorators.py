@@ -18,57 +18,8 @@ def login_required(func):
                 return redirect('login')
     return wrapper
 
-def staff_access(func):
-    def wrapper(request, *args, **kwargs):
-        if _logged_in(request):
-            logged_in_user_id = \
-                request.session.get('logged_in_user_id', None)
-            if logged_in_user_id is None:
-                return _display_access_message_and_redirect(
-                    request, 'staff')
-
-            try:
-                user = models.User.objects.get(pk=logged_in_user_id)
-                if user.is_staff():
-                    return func(request, *args, **kwargs)
-                else:
-                    return _display_access_message_and_redirect(
-                        request, 'staff')
-            except models.User.DoesNotExist:
-                return _display_access_message_and_redirect(
-                    request, 'staff')
-        else:
-            if request.is_ajax():
-                return helpers.json_redirect(reverse('login'))
-            else:
-                messages.error(request, 'Please login to view this page.')
-                return redirect('login')
-    return wrapper
-
-def parent_access(func):
-    def wrapper(request, *args, **kwargs):
-        if _logged_in(request):
-            logged_in_user_id = \
-                request.session.get('logged_in_user_id', None)
-            if logged_in_user_id is None:
-                return _display_access_message_and_redirect(request, 'parent')
-
-            try:
-                user = models.User.objects.get(pk=logged_in_user_id)
-                if user.is_parent():
-                    return func(request, *args, **kwargs)
-                else:
-                    return _display_access_message_and_redirect(
-                        request, 'parent')
-            except models.User.DoesNotExist:
-                return _display_access_message_and_redirect(request, 'parent')
-        else:
-            if request.is_ajax():
-                return helpers.json_redirect(reverse('login'))
-            else:
-                messages.error(request, 'Please login to view this page.')
-                return redirect('login')
-    return wrapper
+'''
+# for group related stuff
 
 def admin_access(func):
     def wrapper(request, *args, **kwargs):
@@ -94,6 +45,7 @@ def admin_access(func):
                 messages.error(request, 'Please login to view this page.')
                 return redirect('login')
     return wrapper
+'''
 
 def _logged_in(request):
     if request.session.get('logged_in_user_id', None) is not None:
