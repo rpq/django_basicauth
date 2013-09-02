@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.db import transaction
 
-from basicauth.decorators import login_required, admin_access, _logged_in
+from basicauth.decorators import login_required, _logged_in
 from basicauth import models as basicauth_models
 from basicauth.authentication import forms
 from basicauth.forms import UserModelForm

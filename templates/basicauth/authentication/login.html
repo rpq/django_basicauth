@@ -6,6 +6,7 @@
   <h4>Login</h4>
   <form method="post" action="{% url 'login' %}">
     {% csrf_token %}
+    {{ login_form.errors }}
     <div>
       <label>{{ login_form.username.label }}</label>
       {{ login_form.username }}
