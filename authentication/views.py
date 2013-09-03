@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.db import transaction
+from django.conf import settings
 
 from basicauth.decorators import login_required, _logged_in
 from basicauth import models as basicauth_models
@@ -51,7 +52,7 @@ def login_redirect(request):
         user = basicauth_models.User.objects.filter(
             pk=request.session.get('logged_in_user_id'))
         if user.exists():
-            return redirect('userprofile_detail', user[0].username)
+            return redirect(settings.LOGIN_SUCCESS_DEFAULT_URL)
         else:
             request.session.pop('logged_in_user_id', None)
     return redirect('login')
@@ -61,14 +62,19 @@ def register(request):
     if request.POST:
         user_model_form = UserModelForm(request.POST)
         if user_model_form.is_valid():
+            print 'valid form'
             user = user_model_form.save(commit=False)
             user.set_password(
                 user_model_form.cleaned_data['password'].encode(
                     'utf-8'))
             user.save()
+            print 'saved user'
             user.send_verify_email()
+            print 'sent email'
             messages.info(request, 'Successfully logged in')
+            print 'setting to logged in'
             request.session['logged_in_user_id'] = user.id
+            print 'redirecting...'
             return redirect('login_redirect')
         else:
             d = dict(form=user_model_form)
@@ -88,4 +94,4 @@ def register_email_verify(request, verify_id):
     u.save()
     messages.info(request,
         'We have successfully verified your email address.')
-    return redirect('userprofile_detail', u.username)
+    return redirect(settings.LOGIN_SUCCESS_DEFAULT_URL)
