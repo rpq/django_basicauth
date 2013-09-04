@@ -1,0 +1,1 @@
+create symlink login.html to point to login.custom.html or login.release.html for basic login form (essentially uses authentication/forms.py's LoginForm form).

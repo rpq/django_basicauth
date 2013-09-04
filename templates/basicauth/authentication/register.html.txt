@@ -1,0 +1,1 @@
+create symlink register.html to point to register.custom.html or register.release.html for basic register form (essentially uses basicauth/forms.py's UserModelForm form).
