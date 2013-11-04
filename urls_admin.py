@@ -26,4 +26,14 @@ urlpatterns = patterns(
     url(r'/usergroup/' \
         '(?P<usergroup_id>\d+)/delete$',
         'usergroup_delete', name='usergroup_delete'),
+
+'''
+    url(r'^register$', 'basicauth.authentication.views.register',
+        name='register'),
+    url(r'^register$', 'basicauth.authentication.views.register',
+        name='register'),
+    url(r'^verify-email/(?P<verify_id>[a-zA-Z-]+)$',
+        'basicauth.authentication.views.register_email_verify',
+        name='register_email_verify'),
+'''
 )
