@@ -24,9 +24,9 @@ def _logged_in(request):
     else:
         return False
 
-def _display_access_message_and_redirect(request, access='admin'):
+def _display_access_message_and_redirect(request, access):
     request.session['last_requested_page'] = request.path
     messages.error(request, 
-        'Must have %s access to view this page. %s' % \
+        'Must have %s access to view %s' % \
         (access, request.path,))
     return redirect('login')
