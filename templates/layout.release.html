@@ -1,0 +1,20 @@
+<html>
+  <head><title></title></head>
+
+  <script
+    type="text/javascript"
+    src="{{STATIC_URL}}javascripts/common.js"></script>
+  {% block additional_javascripts %}{% endblock %}
+
+  <link 
+    rel="stylesheet"
+    href="{{STATIC_URL}}stylesheets/common.css" />
+  {% block additional_stylesheets %}{% endblock %}
+
+  <body>
+    {% include "_navigation.html" %}
+    {% include "_messages.html" %}
+    {% block content %}{% endblock %}
+    {% include "_footer.html" %}
+  </body>
+</html>
