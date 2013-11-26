@@ -7,10 +7,9 @@ if __name__ == '__main__':
         os.path.dirname(__file__), '..', '..'))
     sys.path.insert(0, PROJECT_DIRECTORY)
 
-    from django.core.management import setup_environ
-    from django_blog import settings
-
-    setup_environ(settings)
+    PROJECT_DIR_NAME = os.path.basename(PROJECT_DIRECTORY)
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+        '{}.settings'.format(PROJECT_DIR_NAME))
 
     from basicauth import models
 
