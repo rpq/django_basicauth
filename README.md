@@ -1,18 +1,18 @@
-django_basicauth
-================
+# django_basicauth
 
-sometimes I don't feel like using anything from django.contrib.user. this is really minimum viable.  use at your own risk.
+Sometimes I do not feel like using anything from django.contrib.user. This is really minimum viable alternative.  Use at your own risk.
 
-Add as git submodule
---------------------
+### Add as git submodule
 
 git submodule add ssh://rpq@winscores.com/home/rpq/.local/var/git/django_basicauth basicauth
 
-2. Add imports and urls to your urls.py
---------------------
+### Add 'basicauth' to INSTALLED_APPS setting and syncdb
 
-2 from django.views.generic.base import RedirectView
-4 from django.conf import settings
+### Update urls.py
+
+```
+from django.views.generic.base import RedirectView
+from django.conf import settings
 
 url(r'^success$',
     RedirectView.as_view(url=settings.LOGIN_SUCCESS_DEFAULT_URL),
@@ -26,26 +26,25 @@ url(r'^admin/login$',
 url(r'^logout$',
     'basicauth.authentication.views.logout',
     name='logout'),
+```
 
-Configure LOGIN_SUCCESS_DEFAULT_URL
---------------------
+### Update settings.py
 
-Add basicauth to installed_apps setting and syncdb
---------------------
+ * Configure LOGIN_SUCCESS_DEFAULT_URL = '/' (or whatever you want the
+   redirect to be)
 
-Copy /templates/basicauth/authentication/login.release.html 
-to /templates/basicauth/authentication/login.custom.html
---------------------
-
-Make symlink from login.custom.html (from previous step) to 
-point from login.html (ie, ln -s login.custom.html login.html)
---------------------
-
-Create directory for static files and template files and add to
+ * Create directory for static files and template files and add to
 STATICFILES_DIRS and TEMPLATE_DIRS respectively
---------------------
 
-There is a generic layout.html in basicauth/templates/login.release.html.
-Configure file for your usage (note you may need to add partials called
-from this file.
---------------------
+### Update template files
+
+ * There is a generic example login.html file in 
+   basicauth/templates/login.release.html. Symlink it or copy it.
+     * Copy /templates/basicauth/authentication/login.release.html 
+       to /templates/basicauth/authentication/login.custom.html
+     * Make symlink from login.custom.html (from previous step) to 
+       point from login.html (ie, ln -s login.custom.html login.html)
+
+### Other notes
+
+ * Decorators (ie, login_required, etc) are in decorators.py.
